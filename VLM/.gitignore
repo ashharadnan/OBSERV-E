@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+models/*.pt
+models/*.onnx
+outputs/*.mp4
+outputs/*.jsonl
+datasets/coco/
+datasets/mot17/

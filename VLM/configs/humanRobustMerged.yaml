@@ -1,0 +1,8 @@
+path: datasets/humanRobust
+autodownload: false
+train: images/train
+val: images/val
+test:
+nc: 1
+names:
+  0: person

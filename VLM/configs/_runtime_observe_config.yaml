@@ -1,0 +1,87 @@
+detector:
+  confThreshold: 0.3
+  iouThreshold: 0.5
+  imageSize: 416
+  device: cpu
+  personClassId: 0
+tracking:
+  detectEvery: 2
+  trackerType: auto
+  maxLostFrames: 20
+  maxPredictionAgeSec: 0.75
+  commandLookaheadSec: 0.008
+  selectionMode: closestToCenter
+  maxAssociationDistanceRatio: 0.3
+  minAssociationIou: 0.05
+kalman:
+  dt: 0.0333333333
+  processNoisePosition: 8.0
+  processNoiseVelocity: 25.0
+  processNoiseSize: 6.0
+  measurementNoisePosition: 10.0
+  measurementNoiseSize: 14.0
+  initialCovariance: 75.0
+output:
+  outputMode: jsonl
+  udpHost: 127.0.0.1
+  udpPort: 5005
+  jsonlPath: outputs/observeTrackingStates.jsonl
+hazardDetector:
+  confThreshold: 0.25
+  iouThreshold: 0.45
+  imageSize: 416
+  device: cpu
+  pathCorridorRatio: 0.34
+riskEngine:
+  fallWeight: 0.22
+  hazardWeight: 0.16
+  immobilityWeight: 0.12
+  nonResponseWeight: 0.18
+  voiceHelpWeight: 0.2
+  pathDangerWeight: 0.12
+  trafficThreatWeight: 0.18
+  cautionThreshold: 0.33
+  checkInThreshold: 0.52
+  contactThreshold: 0.72
+  emergencyThreshold: 0.88
+narration:
+  summaryIntervalSec: 2.0
+speech:
+  enabled: true
+  minGapSec: 1.2
+  interruptGapSec: 0.55
+  sameHazardCooldownSec: 5.0
+  contextCooldownSec: 3.5
+  clearPathHoldSec: 1.0
+  clearPathCooldownSec: 5.0
+  nonResponseReminderSec: 3.0
+  historySize: 4
+  logPath: outputs/observeSpeechLog.jsonl
+outreach:
+  logPath: outputs/outreachEvents.jsonl
+  cooldownSec: 30.0
+observe:
+  userName: Danish
+  locationLabel: Hackathon demo
+  dbPath: outputs/observe.db
+  checkInDelaySec: 10.0
+  summaryEveryFrames: 45
+  immobilityWindowSec: 2.0
+  emergencyEnabled: false
+  defaultContacts:
+  - name: Demo Contact
+    phone: '+10000000000'
+    relation: friend
+    allowSms: true
+    allowCall: true
+vlm:
+  enabled: true
+  model: meta-llama/llama-4-scout-17b-16e-instruct
+  endpoint: https://api.groq.com/openai/v1/chat/completions
+  apiKeyEnv: 
+  intervalSec: 2.0
+  requestTimeoutSec: 8.0
+  maxImageWidth: 640
+  temperature: 0.2
+  maxCompletionTokens: 180
+  apiKey:

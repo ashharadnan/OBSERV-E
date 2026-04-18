@@ -1,0 +1,5 @@
+numpy>=1.26
+opencv-contrib-python>=4.10.0
+ultralytics>=8.4.0,<9
+PyYAML>=6.0
+requests>=2.31.0

@@ -1,0 +1,27 @@
+detector:
+  confThreshold: 0.30
+  iouThreshold: 0.50
+  imageSize: 416
+  device: cpu
+  personClassId: 0
+tracking:
+  detectEvery: 2
+  trackerType: auto
+  maxLostFrames: 20
+  maxPredictionAgeSec: 0.75
+  commandLookaheadSec: 0.01
+  selectionMode: closestToCenter
+  maxAssociationDistanceRatio: 0.30
+  minAssociationIou: 0.05
+kalman:
+  dt: 0.0333333333
+  processNoisePosition: 8.0
+  processNoiseVelocity: 25.0
+  processNoiseSize: 6.0
+  measurementNoisePosition: 10.0
+  measurementNoiseSize: 14.0
+  initialCovariance: 75.0
+output:
+  outputMode: stdout
+  udpHost: 127.0.0.1
+  udpPort: 5005

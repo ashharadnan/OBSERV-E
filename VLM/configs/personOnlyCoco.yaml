@@ -1,0 +1,8 @@
+path: datasets/cocoPerson
+autodownload: false
+train: images/train2017
+val: images/val2017
+test:
+nc: 1
+names:
+  0: person
