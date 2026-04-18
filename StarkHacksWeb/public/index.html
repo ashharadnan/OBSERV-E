@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b1020" />
+    <title>OBSERV-E Voice Companion</title>
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <h1>OBSERV-E Voice Companion</h1>
+          <p class="subtitle">Show exactly what OBSERV-E will say, play it through ElevenLabs, and connect through Bluetooth, USB serial, or a live bridge for mobile devices.</p>
+        </div>
+        <div class="status-stack" aria-label="status">
+          <div id="browserStatus" class="pill muted">Checking browser support…</div>
+          <div id="transportStatus" class="pill muted">No transport selected</div>
+          <div id="connectionStatus" class="pill muted">Robot not connected</div>
+          <div id="audioStatus" class="pill muted">Audio idle</div>
+        </div>
+      </header>
+
+      <main class="grid">
+        <section class="card primary-card">
+          <h2>Connection</h2>
+
+          <div class="transport-strip">
+            <button id="connectBluetoothButton" class="big-button">Connect with Bluetooth</button>
+            <button id="connectSerialButton" class="big-button secondary">Connect with USB</button>
+            <button id="connectBridgeButton" class="big-button secondary">Connect with bridge</button>
+          </div>
+
+          <div class="button-row compact-row">
+            <button id="reconnectButton" class="big-button secondary">Reconnect known Bluetooth robot</button>
+            <button id="disconnectButton" class="big-button secondary" disabled>Disconnect</button>
+            <button id="speakAgainButton" class="big-button secondary" disabled>Speak last line again</button>
+            <button id="stopAudioButton" class="big-button danger" disabled>Stop speaking</button>
+          </div>
+
+          <div id="supportBanner" class="support-banner" aria-live="polite"></div>
+
+          <div class="settings-grid">
+            <label>
+              Voice ID
+              <input id="voiceIdInput" type="text" autocomplete="off" />
+            </label>
+            <label>
+              Model ID
+              <input id="modelIdInput" type="text" autocomplete="off" />
+            </label>
+            <label>
+              Device name prefix
+              <input id="devicePrefixInput" type="text" value="OBSERVE" autocomplete="off" />
+            </label>
+            <label>
+              Repeat cooldown (ms)
+              <input id="cooldownInput" type="number" min="1000" step="500" value="7000" />
+            </label>
+            <label>
+              Serial baud rate
+              <input id="serialBaudInput" type="number" min="9600" step="1" value="115200" />
+            </label>
+            <label>
+              Bridge URL
+              <input id="bridgeUrlInput" type="text" value="/api/events" autocomplete="off" />
+            </label>
+          </div>
+
+          <details class="help-box details-box" open>
+            <summary>Quick setup and troubleshooting</summary>
+            <ol>
+              <li>Bluetooth direct mode needs a browser that exposes <strong>navigator.bluetooth</strong> in a secure context.</li>
+              <li>If Bluetooth is missing, use <strong>Connect with USB</strong> on desktop Chrome or <strong>Connect with bridge</strong> from any browser on the same network.</li>
+              <li>For bridge mode on mobile, run the Node server on your laptop or robot computer and open this page from your phone using that machine’s local IP.</li>
+              <li>Power the Arduino robot and confirm it advertises as <strong>OBSERVE-Robot</strong> or is connected over USB.</li>
+              <li>Tap any button once to unlock audio before expecting spoken output.</li>
+            </ol>
+            <p id="diagnosticText" class="diagnostic-text">No diagnostics yet.</p>
+          </details>
+        </section>
+
+        <section class="card speech-card">
+          <h2>What will be spoken</h2>
+          <div id="liveSpeech" class="live-speech" aria-live="assertive">Waiting for robot speech…</div>
+          <div class="queue-box">
+            <div class="queue-header">
+              <span>Pending queue</span>
+              <span id="queueCount">0 items</span>
+            </div>
+            <ul id="queueList" class="queue-list"></ul>
+          </div>
+        </section>
+
+        <section class="card transcript-card">
+          <h2>Transcript</h2>
+          <div class="transcript-controls">
+            <button id="clearTranscriptButton" class="secondary">Clear transcript</button>
+            <button id="copyTranscriptButton" class="secondary">Copy transcript</button>
+          </div>
+          <ul id="transcriptList" class="transcript-list" aria-live="polite"></ul>
+        </section>
+
+        <section class="card">
+          <h2>Manual test</h2>
+          <label>
+            Send text through the same speaking pipeline
+            <textarea id="manualTextInput" rows="4" placeholder="Heads up, there is a chair slightly to your left."></textarea>
+          </label>
+          <div class="button-row">
+            <button id="manualNormalButton" class="big-button secondary">Speak normal</button>
+            <button id="manualUrgentButton" class="big-button danger">Speak urgent</button>
+            <button id="sendRobotAckButton" class="big-button secondary" disabled>Send ack to robot</button>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

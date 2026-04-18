@@ -1,0 +1,10 @@
+{
+  "name": "OBSERV-E Voice Companion",
+  "short_name": "OBSERV-E",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b1020",
+  "theme_color": "#0b1020",
+  "description": "Mobile-friendly voice companion for OBSERV-E robot speech and ElevenLabs playback.",
+  "icons": []
+}
