@@ -29,7 +29,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdbool.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -76,7 +76,20 @@ uint8_t UpdateCharData[512];
 uint8_t NotifyCharData[512];
 uint16_t Connection_Handle;
 /* USER CODE BEGIN PV */
+bool flags[4] = {false};
+int8_t inputs[4] = {0};
 
+motor_pack_t* motors[4] = {&motor1A
+,&motor1B
+,&motor2A
+,&motor2B};
+
+UART_HandleTypeDef* ports[4] = {
+  &huart1,
+  &huart1,
+  &hlpuart1,
+  &hlpuart1
+};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -87,7 +100,7 @@ uint16_t Connection_Handle;
 /* Voltage_SVC */
 
 /* USER CODE BEGIN PFP */
-
+void Drive_Task(void);
 /* USER CODE END PFP */
 
 /* Functions Definition ------------------------------------------------------*/
@@ -103,55 +116,75 @@ void Custom_STM_App_Notification(Custom_STM_App_Notification_evt_t *pNotificatio
     /* USER CODE END CUSTOM_STM_App_Notification_Custom_Evt_Opcode */
 
     /* MOTOR1_SVC */
-    case CUSTOM_STM_P_READ_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_P_READ_EVT */
+    case CUSTOM_STM_P1_READ_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_P1_READ_EVT */
 
-      /* USER CODE END CUSTOM_STM_P_READ_EVT */
+      /* USER CODE END CUSTOM_STM_P1_READ_EVT */
       break;
 
-    case CUSTOM_STM_P_WRITE_NO_RESP_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_P_WRITE_NO_RESP_EVT */
-
-      /* USER CODE END CUSTOM_STM_P_WRITE_NO_RESP_EVT */
+    case CUSTOM_STM_P1_WRITE_NO_RESP_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_P1_WRITE_NO_RESP_EVT */
+      if(pNotification->DataTransfered.Length > 0)
+      {
+        // Assuming a 1-byte characteristic. Adjust index for larger data types.
+        inputs[0] = pNotification->DataTransfered.pPayload[0];
+        flags[0] = true;
+      }
+      /* USER CODE END CUSTOM_STM_P1_WRITE_NO_RESP_EVT */
       break;
 
     /* MOTOR2_SVC */
-    case CUSTOM_STM_P_READ_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_P_READ_EVT */
+    case CUSTOM_STM_P2_READ_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_P2_READ_EVT */
 
-      /* USER CODE END CUSTOM_STM_P_READ_EVT */
+      /* USER CODE END CUSTOM_STM_P2_READ_EVT */
       break;
 
-    case CUSTOM_STM_P_WRITE_NO_RESP_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_P_WRITE_NO_RESP_EVT */
-
-      /* USER CODE END CUSTOM_STM_P_WRITE_NO_RESP_EVT */
+    case CUSTOM_STM_P2_WRITE_NO_RESP_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_P2_WRITE_NO_RESP_EVT */
+      if(pNotification->DataTransfered.Length > 0)
+      {
+        // Assuming a 1-byte characteristic. Adjust index for larger data types.
+        inputs[1] = pNotification->DataTransfered.pPayload[0];
+        flags[1] = true;
+      }
+      /* USER CODE END CUSTOM_STM_P2_WRITE_NO_RESP_EVT */
       break;
 
     /* MOTOR3_SVC */
-    case CUSTOM_STM_P_READ_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_P_READ_EVT */
+    case CUSTOM_STM_P3_READ_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_P3_READ_EVT */
 
-      /* USER CODE END CUSTOM_STM_P_READ_EVT */
+      /* USER CODE END CUSTOM_STM_P3_READ_EVT */
       break;
 
-    case CUSTOM_STM_P_WRITE_NO_RESP_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_P_WRITE_NO_RESP_EVT */
-
-      /* USER CODE END CUSTOM_STM_P_WRITE_NO_RESP_EVT */
+    case CUSTOM_STM_P3_WRITE_NO_RESP_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_P3_WRITE_NO_RESP_EVT */
+      if(pNotification->DataTransfered.Length > 0)
+      {
+        // Assuming a 1-byte characteristic. Adjust index for larger data types.
+        inputs[02] = pNotification->DataTransfered.pPayload[0];
+        flags[02] = true;
+      }
+      /* USER CODE END CUSTOM_STM_P3_WRITE_NO_RESP_EVT */
       break;
 
     /* MOTOR4_SVC */
-    case CUSTOM_STM_P_READ_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_P_READ_EVT */
+    case CUSTOM_STM_P4_READ_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_P4_READ_EVT */
 
-      /* USER CODE END CUSTOM_STM_P_READ_EVT */
+      /* USER CODE END CUSTOM_STM_P4_READ_EVT */
       break;
 
-    case CUSTOM_STM_P_WRITE_NO_RESP_EVT:
-      /* USER CODE BEGIN CUSTOM_STM_P_WRITE_NO_RESP_EVT */
-
-      /* USER CODE END CUSTOM_STM_P_WRITE_NO_RESP_EVT */
+    case CUSTOM_STM_P4_WRITE_NO_RESP_EVT:
+      /* USER CODE BEGIN CUSTOM_STM_P4_WRITE_NO_RESP_EVT */
+      if(pNotification->DataTransfered.Length > 0)
+      {
+        // Assuming a 1-byte characteristic. Adjust index for larger data types.
+        inputs[03] = pNotification->DataTransfered.pPayload[0];
+        flags[03] = true;
+      }
+      /* USER CODE END CUSTOM_STM_P4_WRITE_NO_RESP_EVT */
       break;
 
     /* Voltage_SVC */
@@ -219,13 +252,32 @@ void Custom_APP_Notification(Custom_App_ConnHandle_Not_evt_t *pNotification)
 void Custom_APP_Init(void)
 {
   /* USER CODE BEGIN CUSTOM_APP_Init */
-
+  UTIL_SEQ_RegTask(1<<CFG_DRIVE_TASK, UTIL_SEQ_RFU, Drive_Task);
+  UTIL_SEQ_SetTask(1<<CFG_DRIVE_TASK, CFG_SCH_PRIO_0);
   /* USER CODE END CUSTOM_APP_Init */
   return;
 }
 
 /* USER CODE BEGIN FD */
+void Drive_Task(void) {
 
+  for (int i = 0; i < 4; i++) {
+    if (flags[i]) {
+      flags[i]=false;
+      if (inputs[i] < 0){
+        motor_drive(motors[i], (i%2)*4, BACKWARD, inputs[i]*-1);
+      }
+      else {
+        motor_drive(motors[i], (i%2)*4, FORWARD, inputs[i]);
+      }
+      motor_check(motors[i]);
+      HAL_UART_Transmit(ports[i], (uint8_t*)motors[i], 4,HAL_MAX_DELAY);
+      HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+    }
+  }
+
+  UTIL_SEQ_SetTask(1<<CFG_DRIVE_TASK, CFG_SCH_PRIO_0);
+}
 /* USER CODE END FD */
 
 /*************************************************************

@@ -18,9 +18,11 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "usb_device.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "usbd_cdc_if.h"
 
 /* USER CODE END Includes */
 
@@ -53,7 +55,16 @@ DMA_HandleTypeDef hdma_usart1_tx;
 RTC_HandleTypeDef hrtc;
 
 /* USER CODE BEGIN PV */
+volatile uint8_t USB_RX_BUF[2048] = {0};
+volatile uint8_t USB_TX_BUF[2048] = {0};
 
+volatile motor_pack_t motor1A = {.add = 128};
+volatile motor_pack_t motor1B = {.add = 128};
+volatile motor_pack_t motor2A = {.add = 128};
+volatile motor_pack_t motor2B = {.add = 128};
+
+volatile UART_HandleTypeDef* motor1_UART = &huart1;
+volatile UART_HandleTypeDef* motor2_UART = &hlpuart1;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -118,9 +129,16 @@ int main(void)
   MX_USART1_UART_Init();
   MX_LPUART1_UART_Init();
   MX_ADC1_Init();
+  MX_USB_Device_Init();
   MX_RF_Init();
   /* USER CODE BEGIN 2 */
+  motor_set_minV(&motor1A, 0);
+  motor_check(&motor1A);
+  HAL_UART_Transmit(motor1_UART, (uint8_t*)&motor1A, 4, HAL_MAX_DELAY);
 
+  motor_set_minV(&motor2A, 0);
+  motor_check(&motor2A);
+  HAL_UART_Transmit(motor2_UART, (uint8_t*)&motor2A, 4, HAL_MAX_DELAY);
   /* USER CODE END 2 */
 
   /* Init code for STM32_WPAN */
@@ -200,7 +218,15 @@ void PeriphCommonClock_Config(void)
 
   /** Initializes the peripherals clock
   */
-  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SMPS|RCC_PERIPHCLK_RFWAKEUP;
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SMPS|RCC_PERIPHCLK_RFWAKEUP
+                              |RCC_PERIPHCLK_USB|RCC_PERIPHCLK_ADC;
+  PeriphClkInitStruct.PLLSAI1.PLLN = 6;
+  PeriphClkInitStruct.PLLSAI1.PLLP = RCC_PLLP_DIV2;
+  PeriphClkInitStruct.PLLSAI1.PLLQ = RCC_PLLQ_DIV2;
+  PeriphClkInitStruct.PLLSAI1.PLLR = RCC_PLLR_DIV2;
+  PeriphClkInitStruct.PLLSAI1.PLLSAI1ClockOut = RCC_PLLSAI1_USBCLK|RCC_PLLSAI1_ADCCLK;
+  PeriphClkInitStruct.UsbClockSelection = RCC_USBCLKSOURCE_PLLSAI1;
+  PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_PLLSAI1;
   PeriphClkInitStruct.RFWakeUpClockSelection = RCC_RFWKPCLKSOURCE_HSE_DIV1024;
   PeriphClkInitStruct.SmpsClockSelection = RCC_SMPSCLKSOURCE_HSI;
   PeriphClkInitStruct.SmpsDivSelection = RCC_SMPSCLKDIV_RANGE1;

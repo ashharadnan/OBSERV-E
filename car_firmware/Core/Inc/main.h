@@ -34,7 +34,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include  "sabretooth.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -49,7 +49,16 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
+volatile motor_pack_t motor1A;
+volatile motor_pack_t motor1B;
+volatile motor_pack_t motor2A;
+volatile motor_pack_t motor2B;
 
+volatile UART_HandleTypeDef* motor1_UART;
+volatile UART_HandleTypeDef* motor2_UART;
+
+UART_HandleTypeDef hlpuart1;
+UART_HandleTypeDef huart1;
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/

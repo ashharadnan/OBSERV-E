@@ -35,13 +35,13 @@ extern "C" {
 typedef enum
 {
   /* MOTOR1_SVC */
-  CUSTOM_STM_P,
+  CUSTOM_STM_P1,
   /* MOTOR2_SVC */
-  CUSTOM_STM_P,
+  CUSTOM_STM_P2,
   /* MOTOR3_SVC */
-  CUSTOM_STM_P,
+  CUSTOM_STM_P3,
   /* MOTOR4_SVC */
-  CUSTOM_STM_P,
+  CUSTOM_STM_P4,
   /* Voltage_SVC */
   CUSTOM_STM_V_READ,
 } Custom_STM_Char_Opcode_t;
@@ -49,17 +49,17 @@ typedef enum
 typedef enum
 {
   /* PORT */
-  CUSTOM_STM_P_READ_EVT,
-  CUSTOM_STM_P_WRITE_NO_RESP_EVT,
-  /* PORT */
-  CUSTOM_STM_P_READ_EVT,
-  CUSTOM_STM_P_WRITE_NO_RESP_EVT,
-  /* PORT */
-  CUSTOM_STM_P_READ_EVT,
-  CUSTOM_STM_P_WRITE_NO_RESP_EVT,
-  /* PORT */
-  CUSTOM_STM_P_READ_EVT,
-  CUSTOM_STM_P_WRITE_NO_RESP_EVT,
+  CUSTOM_STM_P1_READ_EVT,
+  CUSTOM_STM_P1_WRITE_NO_RESP_EVT,
+  /* PORT2 */
+  CUSTOM_STM_P2_READ_EVT,
+  CUSTOM_STM_P2_WRITE_NO_RESP_EVT,
+  /* PORT3 */
+  CUSTOM_STM_P3_READ_EVT,
+  CUSTOM_STM_P3_WRITE_NO_RESP_EVT,
+  /* PORT4 */
+  CUSTOM_STM_P4_READ_EVT,
+  CUSTOM_STM_P4_WRITE_NO_RESP_EVT,
   /* VOLTAGE_READ */
   CUSTOM_STM_V_READ_READ_EVT,
   CUSTOM_STM_NOTIFICATION_COMPLETE_EVT,
@@ -87,10 +87,10 @@ typedef struct
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
-extern uint16_t SizeP;
-extern uint16_t SizeP;
-extern uint16_t SizeP;
-extern uint16_t SizeP;
+extern uint16_t SizeP1;
+extern uint16_t SizeP2;
+extern uint16_t SizeP3;
+extern uint16_t SizeP4;
 extern uint16_t SizeV_Read;
 
 /* USER CODE BEGIN EC */
