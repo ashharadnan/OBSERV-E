@@ -1,0 +1,44 @@
+vlm:
+  enabled: true
+  backend: local
+  model: google/gemma-4-E2B-it
+  modelPath: models/gemma-4-E2B-it
+  endpoint: http://127.0.0.1:8000/v1/chat/completions
+  apiKeyEnv: VLM_API_KEY
+  intervalSec: 4.0
+  requestTimeoutSec: 20.0
+  maxImageWidth: 320
+  temperature: 0.1
+  maxCompletionTokens: 64
+  deviceMap: auto
+  torchDtype: auto
+  enableThinking: false
+  systemPrompt: >-
+    You are an environment-awareness vision system.
+    Describe what is around the user.
+    Focus on obstacles, paths, cars, bikes, stairs, doors, signs, people, and blocked routes.
+    Use the provided detector metadata as additional context.
+    Return valid JSON with keys short_summary, priority_hazard, recommended_action, confidence.
+    Keep short_summary to one sentence under 24 words.
+detector:
+  confThreshold: 0.25
+  iouThreshold: 0.45
+  imageSize: 224
+  device: cpu
+  maxDetections: 8
+  allowedLabels:
+    - person
+    - bicycle
+    - motorcycle
+    - car
+    - bus
+    - truck
+    - stop sign
+    - bench
+    - chair
+    - suitcase
+    - backpack
+    - dog
+    - cat
+    - traffic light
+    - fire hydrant

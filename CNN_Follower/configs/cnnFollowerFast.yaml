@@ -1,0 +1,36 @@
+
+detector:
+  confThreshold: 0.35
+  iouThreshold: 0.5
+  imageSize: 224
+  device: cpu
+  personClassId: 0
+tracking:
+  detectEvery: 8
+  trackerType: lkflow
+  maxLostFrames: 12
+  maxPredictionAgeSec: 0.5
+  commandLookaheadSec: 0.0
+  selectionMode: closestToCenter
+  maxAssociationDistanceRatio: 0.4
+  minAssociationIou: 0.03
+kalman:
+  dt: 0.0333333333
+  processNoisePosition: 8.0
+  processNoiseVelocity: 25.0
+  processNoiseSize: 6.0
+  measurementNoisePosition: 10.0
+  measurementNoiseSize: 14.0
+  initialCovariance: 75.0
+output:
+  outputMode: stdout
+  udpHost: 127.0.0.1
+  udpPort: 5005
+  jsonlPath: outputs/cnnFollowerStates.jsonl
+camera:
+  horizontalFovDeg: 78.0
+  verticalFovDeg: 49.0
+  maxFrameWidth: 416
+  captureWidth: 640
+  captureHeight: 360
+  upsampleControlHz: 60.0
